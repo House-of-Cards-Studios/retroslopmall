@@ -1,2 +1,6 @@
 *.lock
 .rokit/
+# Rojo build output
+rbxlx-build.rbxlx
+build.rbxlx
+out.rbxlx

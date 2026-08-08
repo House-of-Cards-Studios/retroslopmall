@@ -26,7 +26,8 @@ When implementing features, follow the game design in [`README.md`](README.md) a
 |------|---------|
 | **Luau** | All game scripting (Scripts, LocalScripts, ModuleScripts inside the place file) |
 | **Lune** | Dev-tool scripting outside Roblox (`index.luau` uses `@lune/roblox` to deserialize the place) |
-| **Rokit** | Toolchain version manager (locks Lune to v0.10.5) |
+| **Rokit** | Toolchain version manager (locks Lune to v0.10.5, Rojo to v7.7.0) |
+| **Rojo** | Syncs scripts between `src/` filesystem and Roblox place file |
 | **Roblox Studio** | Visual editor; MCP server available for programmatic inspection |
 
 ## How to work with this project
@@ -56,6 +57,61 @@ lune run index.luau
 ```
 
 It reads `retroslopmall.rbxlx` via `@lune/roblox.deserializePlace()`. Extend this script for build tasks, asset validation, or data migration.
+
+### Rojo (script syncing)
+
+Scripts are authored in `src/` and synced into the place file. The directory structure mirrors Roblox services:
+
+```
+src/
+├── ServerScriptService/    # .server.lua → Script
+│   ├── ServerTime.server.lua
+│   └── TycoonSetup.server.lua
+├── ReplicatedStorage/      # .lua → ModuleScript
+│   └── Sounds.lua
+├── StarterGui/             # .client.lua → LocalScript
+│   ├── ScreenGui/
+│   ├── MallMainUI/
+│   └── ShopGUI/
+├── StarterPlayer/
+│   └── StarterPlayerScripts/
+├── ServerStorage/
+└── Workspace/
+    ├── BackdoorGiver/
+    └── RobloxMall/
+        └── LaserTagArena/
+```
+
+**File naming conventions:**
+- `.server.lua` → `Script` (runs on server)
+- `.client.lua` → `LocalScript` (runs on client)
+- `.lua` / `.luau` → `ModuleScript` (shared, require-able)
+
+**Commands:**
+```bash
+rojo build --output build.rbxlx   # Build standalone place from src/
+rojo serve                         # Start live-sync server for Studio plugin
+```
+
+**Workflow for editing scripts:**
+1. Edit `.lua` files in `src/` with your editor
+2. Use the Rojo Studio plugin to sync changes into `retroslopmall.rbxlx`
+3. Or use MCP `execute_luau` / `multi_edit` for direct in-Studio edits
+
+> **⚠️ Safety:** `default.project.json` only syncs `ServerScriptService` and `StarterPlayer/StarterPlayerScripts`. These services contain **only scripts** — syncing them won't destroy models, UI, or assets. The following are **excluded from Rojo** to protect the world:
+>
+> | Service | Why excluded |
+> |---------|-------------|
+> | `Workspace` | Contains the mall building, stores, VIP room, laser tag arena, BackdoorGiver part |
+> | `StarterGui` | Contains UI layouts (ScreenGui, MallMainUI, ShopGUI) — syncing wipes the UI elements |
+> | `ReplicatedStorage` | Contains TopbarPlus library, RemoteEvents, TycoonMetadata, Roof model |
+> | `ServerStorage` | Contains Objects, TycoonAssets, OldSign — Configuration instances, not scripts |
+>
+> Scripts in excluded services are kept in `src/` as reference copies. Edit them via **Studio MCP** (`multi_edit`, `execute_luau`) instead.
+
+> **Note:** Non-script assets (models, parts, UI layouts, sounds) still live in `retroslopmall.rbxlx`. Rojo only manages scripts. The place file remains the source of truth for everything else.
+
+> **TopbarPlus** (third-party icon library in `ReplicatedStorage`) is not extracted to `src/` — it stays in the place file. Extract it later if needed.
 
 ## Game architecture
 

@@ -1,0 +1,22 @@
+{
+  "languageMode": "nonstrict",
+  "lint": {
+    "GlobalUsedAsLocal": false,
+    "UnknownGlobal": false,
+    "DeprecatedGlobal": true,
+    "DuplicateLocal": true,
+    "FormatStringError": true,
+    "FunctionUnused": true,
+    "ImplicitReturn": true,
+    "LocalShadow": true,
+    "LocalUnused": true,
+    "MultiLineStatement": true,
+    "SameLineStatement": true,
+    "TableLiteral": true,
+    "TypeError": true,
+    "UnbalancedAssignment": true,
+    "UnknownRequire": false,
+    "UnusedFunction": true,
+    "UnusedVariable": true
+  }
+}

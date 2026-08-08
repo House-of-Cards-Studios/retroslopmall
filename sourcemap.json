@@ -1,4 +1,48 @@
 {
-  "name": "game",
-  "className": "DataModel"
+  "name": "RetroslopMall",
+  "className": "DataModel",
+  "filePaths": [
+    "default.project.json"
+  ],
+  "children": [
+    {
+      "name": "ServerScriptService",
+      "className": "ServerScriptService",
+      "children": [
+        {
+          "name": "ServerTime",
+          "className": "Script",
+          "filePaths": [
+            "src/ServerScriptService/ServerTime.server.lua"
+          ]
+        },
+        {
+          "name": "TycoonSetup",
+          "className": "Script",
+          "filePaths": [
+            "src/ServerScriptService/TycoonSetup.server.lua"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "StarterPlayer",
+      "className": "StarterPlayer",
+      "children": [
+        {
+          "name": "StarterPlayerScripts",
+          "className": "StarterPlayerScripts",
+          "children": [
+            {
+              "name": "LocalScript",
+              "className": "LocalScript",
+              "filePaths": [
+                "src/StarterPlayer/StarterPlayerScripts/LocalScript.client.lua"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

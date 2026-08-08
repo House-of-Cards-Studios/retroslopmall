@@ -1,0 +1,2 @@
+-- Show/Hide toggle script for the ShopGUI item giver
+-- TODO: Implement shop visibility toggle

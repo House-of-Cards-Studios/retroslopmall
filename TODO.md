@@ -10,6 +10,7 @@
 - [x] **TycoonSetup: Metadata loading** — Reads `ReplicatedStorage.TycoonMetadata` for each store's Facade and FactoryOffset
 - [x] **TycoonSetup: resetTycoon()** — Clones template, sets store facade, positions on floor, creates "Become [Store] Owner" door
 - [x] **TycoonSetup: Upgrade buttons** — 21 model buttons generated per store in 3-column snake layout, priced `$0`–`$100` (`5 × (i-1)`)
+- [x] **TycoonSetup: Button positioning fix** — Fixed off-by-one bug (`i` → `i-1`); orphan cleanup added so pre-modeled buttons can be removed from template
 - [x] **TycoonSetup: Store reset on init** — All 9 stores reset on server start
 
 ### Client
@@ -35,9 +36,9 @@
 ## ❌ To Do
 
 ### 🔴 Critical — Core gameplay loop
-- [ ] **Store claiming** — Wire "Become [Store] Owner" door touch to assign store to player (set `TycoonName`, `Owner` in config)
-- [ ] **Money earning (droppers/conveyors)** — Implement dropper → conveyor → collector pipeline for cash generation
-- [ ] **Upgrade purchasing** — Button click handlers: deduct cash, reveal next model/upgrade, update `TycoonProgression`
+- [x] **Store claiming** — Wire "Become [Store] Owner" door touch to assign store to player (set `TycoonName`, `Owner` in config)
+- [x] **Money earning (income system)** — Income per tick (+$0→+$50, 6s→1s) with upgradeable amount/speed; collect button to claim cash
+- [ ] **Upgrade purchasing (model buttons)** — Button click handlers: deduct cash, reveal next model/upgrade, update `TycoonProgression`
 - [ ] **Store opening** — When upgrade 21 is purchased (item giver), show "OPEN" sign on storefront
 
 ### 🟠 High — Featured systems
@@ -62,9 +63,9 @@
 - [ ] **LaserTagArena modernization** — Update deprecated patterns (old `findFirstChild`, Lighting weapon storage references)
 
 ### 🔵 Tooling & infrastructure
-- [ ] **Rojo integration** — Sync scripts from filesystem to `.rbxlx` for version-controlled code review
+- [x] **Rojo integration** — Installed v7.7.0 via Rokit; `default.project.json` maps `src/` to Roblox services; all existing scripts extracted
 - [ ] **Expand `index.luau`** — Add build tasks, asset validation, script linting via Lune
-- [ ] **`.luaurc`** — Add Luau type-checking config for LSP strict mode
+- [x] **`.luaurc`** — Luau type-checking config with lint rules
 - [ ] **Unit tests** — ModuleScript-based tests for core systems (tycoon logic, store claiming, rebirth math)
 
 ---
