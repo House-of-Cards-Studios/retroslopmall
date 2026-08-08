@@ -22,6 +22,33 @@
           "filePaths": [
             "src/ServerScriptService/TycoonSetup.server.lua"
           ]
+        },
+        {
+          "name": "UILabs",
+          "className": "Folder",
+          "children": [
+            {
+              "name": "Retroslop.storybook",
+              "className": "ModuleScript",
+              "filePaths": [
+                "src/UILabs/Retroslop.storybook.lua"
+              ]
+            },
+            {
+              "name": "RewardsDialog.story",
+              "className": "ModuleScript",
+              "filePaths": [
+                "src/UILabs/RewardsDialog.story.lua"
+              ]
+            },
+            {
+              "name": "MallMainUI.story",
+              "className": "ModuleScript",
+              "filePaths": [
+                "src/UILabs/MallMainUI.story.lua"
+              ]
+            }
+          ]
         }
       ]
     },

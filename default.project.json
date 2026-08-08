@@ -4,7 +4,10 @@
     "$className": "DataModel",
 
     "ServerScriptService": {
-      "$path": "src/ServerScriptService"
+      "$path": "src/ServerScriptService",
+      "UILabs": {
+        "$path": "src/UILabs"
+      }
     },
 
     "StarterPlayer": {

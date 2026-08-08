@@ -1,5 +1,15 @@
 # AGENTS
 
+## Agent rules (read first)
+
+- **Never run `Remove-Item` or destructive shell commands** unless the user explicitly asks
+- **Don't apply fixes in Play mode then stop to re-apply** — Play mode changes are not persistent. Only edit in Play mode if the user asks for a "live update", and don't exit Play mode after
+- **Edit in Edit mode → user tests in Play mode** — this is the correct workflow, use the Roblox Studio MCP server to exit play mode if the user is currently inside of it unless they asked for a "live update"
+- **`rojo build` to validate**, don't delete the build artifact (it's gitignored)
+- **Pre-modeled buttons in the template are at correct positions** — don't try to reposition them with code, just rename them
+- **Don't read `retroslopmall.rbxlx` directly unless it's necessary to** — it's a massive XML file. Use MCP tools or `lune` if the MCP server is unavailable (instruct the user to re-open the place file if Lune is used)
+- **Ignore non-Luau-specific problems/linting** - The user may have extensions installed for different kinds of Lua language syntax, such as GLua (Garry's Mod), only notice problems if those problems are specific to the Luau language (Roblox)
+
 ## Project overview
 
 Retroslop Mall is a **Roblox tycoon game** - a retro-styled recreation of the original *Roblox Mall* (2010) by Nightcaller, with modern features added. Each tycoon is a different store in a mall. Players claim an unowned store, buy upgrades, and eventually open their store for other players to visit and purchase items.
@@ -16,7 +26,7 @@ Retroslop Mall is a **Roblox tycoon game** - a retro-styled recreation of the or
 The game is being built by AI agents from the existing foundation:
 - **World:** Mall building, stores, VIP room, laser tag arena are all physically built
 - **Scaffolding:** Player data structures, tycoon metadata, HUD framework, and store templates are in place
-- **What's missing:** The actual gameplay loop — store claiming, money earning, upgrade purchasing, item givers, rebirths, badges, and all interactive systems
+- **What's missing:** The actual gameplay loop — item givers, rebirths, VIP room mechanics, laser tag scoring, badges, and reward systems
 
 When implementing features, follow the game design in [`README.md`](README.md) and track completion in [`TODO.md`](TODO.md).
 
@@ -57,6 +67,8 @@ lune run index.luau
 ```
 
 It reads `retroslopmall.rbxlx` via `@lune/roblox.deserializePlace()`. Extend this script for build tasks, asset validation, or data migration.
+
+**Throwaway Lune scripts:** When writing one-off `.luau` scripts (e.g., to patch the place file), place them in the `temp/` directory. This directory is gitignored, so cleanup (`Remove-Item`) is unnecessary — the scripts are automatically excluded from version control.
 
 ### Rojo (script syncing)
 
@@ -171,7 +183,7 @@ There are **9 stores**, each an independent tycoon:
 | Script | Purpose |
 |--------|---------|
 | `ServerTime` | Updates workspace DistributedGameTime display (Days/Hours/Minutes/Seconds) via RunService.Heartbeat |
-| `TycoonSetup` | Main initialization: player stats, tycoon metadata, store reset/claim logic, upgrade button generation |
+| `TycoonSetup` | Main initialization: player stats, tycoon metadata, store reset/claim logic, income/speed upgrade system, purchase button handlers, collect button, run toggle |
 
 ### Client UI (`StarterGui`)
 
@@ -195,6 +207,7 @@ There are **9 stores**, each an independent tycoon:
 | `TopbarPlus` | Folder | Topbar icon UI library (themes, gamepad, dropdown, menu, selection, notice, indicator, caption, widget) |
 | `Sounds` | ModuleScript | Sound effect management |
 | `PlaySound` / `StopSound` | RemoteEvent | Client→server sound triggers |
+| `IncomeEvent` / `RunEvent` | RemoteEvent | Created at runtime by TycoonSetup — income/purchase notifications and run toggle |
 | `Roof` | Model | Roof model for map toggle visibility |
 | `TycoonMetadata` | Configuration | Per-store Facade and FactoryOffset settings |
 
@@ -219,15 +232,18 @@ There are **9 stores**, each an independent tycoon:
 
 ### Core systems (from README design)
 
-- **Store system (tycoon):** Each store is an independent tycoon. Players claim unowned stores. The last upgrade (item giver) opens the storefront with an "OPEN" sign.
-- **Item giver:** A touch-triggered UI that lets visiting players buy items from a completed store.
-- **VIP room:** Purchase VIP, enter the room, press buttons to earn money.
-- **Laser tag arena:** Red vs Blue teams. Tagging earns money; getting tagged respawns you at mall entrance.
-- **Rebirth system:** Per-store rebirths (not global). Costs money, resets the store, increases earn rate, unlocks more gear.
-- **Badges:** Basic + golden badges per store; Mall-wide badges for completing/rebirthing all stores.
-- **Rewards & quests:** Periodic rewards, daily quests (visit a store, buy from a completed store).
-- **Map:** Translucent ceilings, top-down orthographic view toggle showing players and store logos.
-- **HUD:** Money, owned models count, rebirth count, run button.
+- ✅ **Store claiming:** Players touch the "Become [Store] Owner" door to claim an unowned store. One store per player.
+- ✅ **Income system:** Upgradeable income (+$0→+$50 per tick, free→$2,450) and speed (6s→1s per tick, $5→$25). Collect button to claim accumulated cash.
+- ✅ **Purchase buttons:** 21 model buttons per store, sequential purchasing ($0→$100). Factory models revealed at button position on purchase. Model21 shows "OPEN" on store.
+- ✅ **HUD:** Money display, progression percentage, rebirth count, run button (WalkSpeed 16↔32, server-side). Gold notification toasts for purchases/upgrades.
+- ✅ **Run button:** Server-side WalkSpeed toggle (16↔32) via RunEvent RemoteEvent — safe from anti-cheat.
+- [ ] **Item giver:** A touch-triggered UI (ShopGUI) that lets visiting players buy items from a completed store.
+- [ ] **VIP room:** Purchase VIP, enter the room, press buttons to earn money.
+- [ ] **Laser tag arena:** Red vs Blue teams. Tagging earns money; getting tagged respawns you at mall entrance.
+- [ ] **Rebirth system:** Per-store rebirths (not global). Costs money, resets the store, increases earn rate, unlocks more gear.
+- [ ] **Badges:** Basic + golden badges per store; Mall-wide badges for completing/rebirthing all stores.
+- [ ] **Rewards & quests:** Periodic rewards, daily quests (visit a store, buy from a completed store).
+- [ ] **Map:** Translucent ceilings, top-down orthographic view toggle showing players and store logos.
 
 ## Code conventions
 

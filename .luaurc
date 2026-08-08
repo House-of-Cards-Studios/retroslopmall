@@ -5,7 +5,6 @@
     "UnknownGlobal": false,
     "DeprecatedGlobal": true,
     "DuplicateLocal": true,
-    "FormatStringError": true,
     "FunctionUnused": true,
     "ImplicitReturn": true,
     "LocalShadow": true,
@@ -13,10 +12,6 @@
     "MultiLineStatement": true,
     "SameLineStatement": true,
     "TableLiteral": true,
-    "TypeError": true,
-    "UnbalancedAssignment": true,
-    "UnknownRequire": false,
-    "UnusedFunction": true,
-    "UnusedVariable": true
+    "UnbalancedAssignment": true
   }
 }

@@ -35,7 +35,7 @@ end
 -- Price to upgrade speed from currentLevel to currentLevel+1 (nil = maxed out)
 local function getSpeedPrice(currentLevel: number): number?
 	if currentLevel >= MAX_SPEED_LEVEL then return nil end
-	if currentLevel == 0 then return 0 end
+	if currentLevel == 0 then return 5 end
 	return 5 + 5 * currentLevel
 end
 
