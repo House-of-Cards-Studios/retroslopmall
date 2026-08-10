@@ -13,6 +13,29 @@ local PlayerTycoons = Tycoons:WaitForChild("PlayerTycoons")
 TycoonFactories.Parent = TycoonAssets
 TycoonTemplate.Parent = TycoonAssets
 
+-- Silence legacy Model21 shop scripts (handoff §High-4). Every store's
+-- Model21 is an old item-giver whose per-item scripts reference
+-- `leaderstats` on the parent Model (not a Player) and try to :Clone()
+-- tools from Lighting that don't exist in the current place. They error
+-- once at startup and then re-error every time Model21 is re-parented
+-- into a fresh tycoon (initial setup and every release/reset).
+--
+-- These scripts will be replaced by a single server-owned catalog and
+-- one canonical purchase remote (handoff Step 3). Until then, disable
+-- them here — factories are now safely in ServerStorage, so setting
+-- .Disabled sticks before the models next enter Workspace, preventing
+-- the spew from re-firing on release.
+for _, factory in TycoonFactories:GetChildren() do
+	local model21 = factory:FindFirstChild("Model21")
+	if model21 then
+		for _, desc in model21:GetDescendants() do
+			if desc:IsA("BaseScript") then
+				desc.Disabled = true
+			end
+		end
+	end
+end
+
 local function setCanCollide(part, canCollide)
 	part.CanCollide = canCollide
 	part.CanQuery = canCollide
