@@ -5,7 +5,8 @@
 ## ✅ Completed
 
 ### Server
-- [x] **ServerTime** — DistributedGameTime clock display (Days/Hours/Minutes/Seconds) via `RunService.Heartbeat`
+- [x] **ServerTime** — DistributedGameTime clock display (Days/Hours/Minutes/Seconds), refreshed once per second
+- [x] **Player count display** — Updates the current online count and server-session join count on the entrance models
 - [x] **TycoonSetup: Player data init** — Creates `leaderstats` (Cash, Rebirths), `SaveData` (MusicVolume, SFXVolume, ClassicMode), and `TycoonData` (TycoonName, TycoonProgression, per-store Rebirths) on `PlayerAdded`
 - [x] **TycoonSetup: Metadata loading** — Reads `ReplicatedStorage.TycoonMetadata` for each store's Facade and FactoryOffset
 - [x] **TycoonSetup: resetTycoon()** — Clones template, sets store facade, positions on floor, creates "Become [Store] Owner" door
@@ -38,19 +39,18 @@
 ### 🔴 Critical — Core gameplay loop
 - [x] **Store claiming** — Wire "Become [Store] Owner" door touch to assign store to player (set `TycoonName`, `Owner` in config)
 - [x] **Money earning (income system)** — Income per tick (+$0→+$50, 6s→1s) with upgradeable amount/speed; collect button to claim cash
-- [ ] **Upgrade purchasing (model buttons)** — Button click handlers: deduct cash, reveal next model/upgrade, update `TycoonProgression`
-- [ ] **Store opening** — When upgrade 21 is purchased (item giver), show "OPEN" sign on storefront
+- [x] **Upgrade purchasing (model buttons)** — Touch handlers deduct cash, reveal the next model, and update `TycoonProgression`
+- [x] **Store opening** — Purchasing upgrade 21 marks the storefront as open
 
 ### 🟠 High — Featured systems
 - [ ] **Item giver (ShopGUI)** — Implement 11 item purchase scripts (currently empty stubs); touch-triggered UI for visiting players
 - [ ] **Rebirth system** — Purchase rebirth for large cash amount → reset store → increase earn rate → unlock more gear
 - [ ] **VIP room** — VIP purchase, door access, money-giver button mechanics (buttons exist, no scripts)
 - [ ] **Laser tag scoring** — Money reward on tag, respawn at mall entrance on death
-- [ ] **Player count display** — Dynamic update of "In this Server is X People online" and "In this Server were X people" models
 
 ### 🟡 Medium — UI & polish
 - [ ] **Map toggle** — Wire `MallMapButton` to orthographic top-down view + store logo markers + player dots
-- [ ] **Run button** — Wire `RunButton` to toggle sprint/speed boost
+- [x] **Run button** — Server-authoritative WalkSpeed toggle through `RunEvent`
 - [ ] **Rewards system** — Periodic reward redemption + daily quests (visit store, buy from completed store)
 - [ ] **Badges** — Per-store basic badge (own store), per-store golden badge (rebirth store), Mall-wide basic (open all stores), Mall-wide golden (rebirth all stores)
 - [ ] **Finish Sounds module** — Complete `playSound()` to actually play sounds with volume/speed modifiers
@@ -74,14 +74,14 @@
 
 | # | Store | Facade | FactoryOffset | Claim logic | Upgrades | Item Giver |
 |---|-------|--------|---------------|-------------|----------|------------|
-| 1 | Blank | Facade1 | `0,190,0` | ❌ | ❌ | ❌ |
-| 2 | Burger Mart | Facade2 | `0,30,0` | ❌ | ❌ | ❌ |
-| 3 | Game Shop | Facade1 | `0,70,0` | ❌ | ❌ | ❌ |
-| 4 | Good Sports | Facade1 | `0,110,0` | ❌ | ❌ | ❌ |
-| 5 | TacoTime | Facade1 | `0,90,0` | ❌ | ❌ | ❌ |
-| 6 | The Body Shop | Facade1 | `0,50,0` | ❌ | ❌ | ❌ |
-| 7 | The Music Shop | Facade1 | `0,130,0` | ❌ | ❌ | ❌ |
-| 8 | Toy Shop | Facade1 | `0,170,0` | ❌ | ❌ | ❌ |
-| 9 | Gun Shop | Facade1 | `0,150,0` | ❌ | ❌ | ❌ |
+| 1 | Blank | Facade1 | `0,190,0` | ✅ | ✅ | ❌ |
+| 2 | Burger Mart | Facade2 | `0,30,0` | ✅ | ✅ | ❌ |
+| 3 | Game Shop | Facade1 | `0,70,0` | ✅ | ✅ | ❌ |
+| 4 | Good Sports | Facade1 | `0,110,0` | ✅ | ✅ | ❌ |
+| 5 | TacoTime | Facade1 | `0,90,0` | ✅ | ✅ | ❌ |
+| 6 | The Body Shop | Facade1 | `0,50,0` | ✅ | ✅ | ❌ |
+| 7 | The Music Shop | Facade1 | `0,130,0` | ✅ | ✅ | ❌ |
+| 8 | Toy Shop | Facade1 | `0,170,0` | ✅ | ✅ | ❌ |
+| 9 | Gun Shop | Facade1 | `0,150,0` | ✅ | ✅ | ❌ |
 
 > Note: Only Burger Mart uses Facade2. All others use Facade1. Facades control which storefront mesh/appearance is shown.

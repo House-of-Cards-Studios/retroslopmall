@@ -1,4 +1,5 @@
 *.lock
+.DS_Store
 .rokit/
 # Rojo build output
 rbxlx-build.rbxlx
