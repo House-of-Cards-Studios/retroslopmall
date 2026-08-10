@@ -28,6 +28,13 @@
           "className": "Folder",
           "children": [
             {
+              "name": "MallMainUI.story",
+              "className": "ModuleScript",
+              "filePaths": [
+                "src/UILabs/MallMainUI.story.lua"
+              ]
+            },
+            {
               "name": "Retroslop.storybook",
               "className": "ModuleScript",
               "filePaths": [
@@ -42,10 +49,17 @@
               ]
             },
             {
-              "name": "MallMainUI.story",
+              "name": "IncomeNotification.story",
               "className": "ModuleScript",
               "filePaths": [
-                "src/UILabs/MallMainUI.story.lua"
+                "src/UILabs/IncomeNotification.story.lua"
+              ]
+            },
+            {
+              "name": "ShopGUI.story",
+              "className": "ModuleScript",
+              "filePaths": [
+                "src/UILabs/ShopGUI.story.lua"
               ]
             }
           ]

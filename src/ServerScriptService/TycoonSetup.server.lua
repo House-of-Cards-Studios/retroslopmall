@@ -158,6 +158,9 @@ runEvent.OnServerEvent:Connect(function(player)
 	end
 end)
 
+-- Ensure IncomeEvent exists at startup so clients don't time out waiting for it
+getIncomeEvent()
+
 
 local function resetTycoon(tycoonName, firstTime)
 	local meta = tycoonMeta[tycoonName]
