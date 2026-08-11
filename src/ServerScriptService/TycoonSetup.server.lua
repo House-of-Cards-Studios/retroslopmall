@@ -43,29 +43,12 @@ local function setCanCollide(part, canCollide)
 	part.AudioCanCollide = canCollide
 end
 
--- Income system constants
-local MAX_INCOME_LEVEL = 50
-local MAX_SPEED_LEVEL = 5
-local INITIAL_SPEED = 6
-
--- Price to upgrade income from currentLevel to currentLevel+1 (nil = maxed out)
-local function getIncomePrice(currentLevel: number): number?
-	if currentLevel >= MAX_INCOME_LEVEL then return nil end
-	if currentLevel == 0 then return 0 end
-	return 50 * currentLevel
-end
-
--- Price to upgrade speed from currentLevel to currentLevel+1 (nil = maxed out)
-local function getSpeedPrice(currentLevel: number): number?
-	if currentLevel >= MAX_SPEED_LEVEL then return nil end
-	if currentLevel == 0 then return 5 end
-	return 5 + 5 * currentLevel
-end
-
--- Seconds per tick at a given speed level
-local function getSpeedSeconds(level: number): number
-	return INITIAL_SPEED - level
-end
+-- Pricing / progression math lives in TycoonPricing so it can be unit-tested
+-- without a live DataModel (see handoff §Medium-10).
+local TycoonPricing = require(script.Parent:WaitForChild("TycoonPricing"))
+local getIncomePrice = TycoonPricing.getIncomePrice
+local getSpeedPrice = TycoonPricing.getSpeedPrice
+local getSpeedSeconds = TycoonPricing.getSpeedSeconds
 
 -- Create or get the remote event for income notifications to the client
 local function getIncomeEvent()
