@@ -61,12 +61,23 @@ When Studio is open with the MCP server enabled, you can:
 
 ### Lune scripts
 
-`index.luau` is the entry point for dev tooling. Run with:
+`index.luau` is the Lune entry point. Today it runs the pure-Luau test suite: discovers every `tests/*.spec.luau` file, runs each returned `{ [name] = testFn }` table, and exits non-zero on failure so CI can gate on it. Run with:
 ```bash
 lune run index.luau
 ```
 
-It reads `retroslopmall.rbxlx` via `@lune/roblox.deserializePlace()`. Extend this script for build tasks, asset validation, or data migration.
+Extend it (or add sibling scripts under `tools/`) for future build tasks, asset validation, data migration, or `@lune/roblox`-based place deserialization.
+
+Add a test by dropping a spec file under `tests/`:
+```lua
+-- tests/Example.spec.luau
+local Mod = require("../src/ServerScriptService/YourModule")
+return {
+    ["does the thing"] = function()
+        assert(Mod.thing() == 42, "expected 42")
+    end,
+}
+```
 
 **Throwaway Lune scripts:** When writing one-off `.luau` scripts (e.g., to patch the place file), place them in the `temp/` directory. This directory is gitignored, so cleanup (`Remove-Item`) is unnecessary — the scripts are automatically excluded from version control.
 
