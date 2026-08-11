@@ -141,21 +141,37 @@ Players.PlayerAdded:Connect(function(player)
 	end
 end)
 
--- Run button: server-side handler to toggle sprint safely
+-- Run button: server-side handler to toggle sprint safely.
+-- Accepts an optional desired-state boolean (true=run, false=walk); with no
+-- argument or a non-boolean, falls back to toggling. A per-player cooldown
+-- caps how often a client can change state, so a compromised client can't
+-- flip WalkSpeed every frame.
 local runEvent = getRunEvent()
 local RUN_SPEED = 32
 local WALK_SPEED = 16
-runEvent.OnServerEvent:Connect(function(player)
+local RUN_COOLDOWN = 0.25
+
+local lastRunAt: {[Player]: number} = {}
+Players.PlayerRemoving:Connect(function(player)
+	lastRunAt[player] = nil
+end)
+
+runEvent.OnServerEvent:Connect(function(player, desired)
+	local now = os.clock()
+	if (now - (lastRunAt[player] or 0)) < RUN_COOLDOWN then return end
 	local char = player.Character
 	if not char then return end
 	local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-	if humanoid then
-		if humanoid.WalkSpeed == WALK_SPEED then
-			humanoid.WalkSpeed = RUN_SPEED
-		else
-			humanoid.WalkSpeed = WALK_SPEED
-		end
+	if not humanoid then return end
+	local target
+	if typeof(desired) == "boolean" then
+		target = desired and RUN_SPEED or WALK_SPEED
+	else
+		target = (humanoid.WalkSpeed == WALK_SPEED) and RUN_SPEED or WALK_SPEED
 	end
+	if humanoid.WalkSpeed == target then return end
+	lastRunAt[player] = now
+	humanoid.WalkSpeed = target
 end)
 
 -- Ensure IncomeEvent exists at startup so clients don't time out waiting for it
