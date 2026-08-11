@@ -203,26 +203,28 @@ local function resetTycoon(tycoonName, firstTime)
 		factory:TranslateBy(-meta.FactoryOffset)
 		wait()
 	end
-		
+
 	local clonedFloor = tycoon:FindFirstChild("Floor")
 	clonedFloor.Transparency = 1
 	setCanCollide(clonedFloor, false)
 	tycoon:PivotTo(floor.CFrame)
 
-	if firstTime then
-		-- Extract Model1-Model21 from factory into tycoon, hide below map
-		for i = 1, 21 do
-			local model = factory:FindFirstChild("Model" .. i)
-			if model then
-				model.Parent = tycoon
-				model:PivotTo(CFrame.new(0, -200, 0))
-				for _, p in model:GetDescendants() do
-					if p:IsA("BasePart") then
-						setCanCollide(p, false)
-					end
+	-- Extract Model1-Model21 from factory into tycoon, hide below map.
+	-- On release the factory has been repopulated by releaseTycoon(), so this
+	-- runs on every reset — not only firstTime.
+	for i = 1, 21 do
+		local model = factory:FindFirstChild("Model" .. i)
+		if model then
+			model.Parent = tycoon
+			model:PivotTo(CFrame.new(0, -200, 0))
+			for _, p in model:GetDescendants() do
+				if p:IsA("BasePart") then
+					setCanCollide(p, false)
 				end
 			end
 		end
+	end
+	if firstTime then
 		factory.Parent = TycoonFactories
 	end
 	
@@ -547,6 +549,33 @@ local function resetTycoon(tycoonName, firstTime)
 	
 	return true
 end
+
+-- Release an owned tycoon back to unowned state. Called on PlayerRemoving so
+-- the store is immediately available to another player. Model1-21 live inside
+-- the tycoon after firstTime setup, so we move any that remain back into the
+-- factory before destroying/rebuilding — resetTycoon then re-extracts them.
+local function releaseTycoon(tycoonName)
+	local tycoon = PlayerTycoons:FindFirstChild(tycoonName)
+	if not tycoon then return end
+	local factory = TycoonFactories:FindFirstChild(tycoonName)
+	if factory then
+		for i = 1, 21 do
+			local model = tycoon:FindFirstChild("Model" .. i)
+			if model then
+				model.Parent = factory
+			end
+		end
+	end
+	resetTycoon(tycoonName, false)
+end
+
+Players.PlayerRemoving:Connect(function(player)
+	local tycoonData = player:FindFirstChild("TycoonData")
+	if not tycoonData then return end
+	local nameValue = tycoonData:FindFirstChild("TycoonName")
+	if not nameValue or nameValue.Value == "" then return end
+	releaseTycoon(nameValue.Value)
+end)
 
 for tycoonName, _ in pairs(tycoonMeta) do
 	if not resetTycoon(tycoonName, true) then
