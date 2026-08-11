@@ -1,18 +1,21 @@
-local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
 local Objects = ServerStorage:WaitForChild("Objects")
-local ServerTime = Objects:FindFirstChild("ServerTime")
+local ServerTime = Objects:WaitForChild("ServerTime")
 
-local DaysObject = ServerTime:FindFirstChild("Days").Value
-local HoursObject = ServerTime:FindFirstChild("Hours").Value
-local MinutesObject = ServerTime:FindFirstChild("Minutes").Value
-local SecondsObject = ServerTime:FindFirstChild("Seconds").Value
+local DaysObject = ServerTime:WaitForChild("Days").Value
+local HoursObject = ServerTime:WaitForChild("Hours").Value
+local MinutesObject = ServerTime:WaitForChild("Minutes").Value
+local SecondsObject = ServerTime:WaitForChild("Seconds").Value
 
-RunService.Heartbeat:Connect(function(dt)
+local function updateClock()
 	local serverUptime = workspace.DistributedGameTime
 	DaysObject.Name = math.floor(serverUptime / 86400) .. " - Days -"
 	HoursObject.Name = math.floor(serverUptime / 3600) .. " - Hours -"
 	MinutesObject.Name = math.floor(serverUptime / 60) .. " - Minutes -"
 	SecondsObject.Name = math.floor(serverUptime) .. " - Seconds -"
-	wait()
-end)
+end
+
+while true do
+	updateClock()
+	task.wait(1)
+end
